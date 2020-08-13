@@ -144,16 +144,16 @@ class Create extends React.Component {
         <Draggable key={index} draggableId={"draggable"+index} index={index}>
         {(provided) => (
           <div index={index} id={index} key={index} {...provided.draggableProps} ref={provided.innerRef}>
-            <div className="card" style={{width: "50em"}}>
+            <div className="card rounded" style={{width: "50em"}}>
             <div className="card-header">
             <div className="float-right horizontal">
             <i {...provided.dragHandleProps} class="fa fa-bars" aria-hidden="true"></i>
             <button className="btn btn-danger small" disabled={this.state.questions.length < 2} onClick={() => this.deleteQuestion(index)}><i class="fa fa-trash" aria-hidden="true"></i></button>
             </div>
-            <input className="float-left" name="name" onChange={(e) => this.handleQuestionChange(e, index)} value={this.state.questions[index].name}/>
+            <input className="float-left border-0 rounded" name="name" onChange={(e) => this.handleQuestionChange(e, index)} value={this.state.questions[index].name}/>
             </div>
             <div className="card-body">
-            <select className="float-right" name="type" value={this.state.questions[index].type} onChange={(e) => this.handleQuestionChange(e, index)}>
+            <select className="float-right border-light rounded" name="type" value={this.state.questions[index].type} onChange={(e) => this.handleQuestionChange(e, index)}>
               <option key="Short Answer" value="Short Answer">Short Answer</option>
               <option key="Multiple Choice" value="Multiple Choice">Multiple Choice</option>
               <option key="Multiple Select" value="Multiple Select">Multiple Select</option>
@@ -170,15 +170,17 @@ class Create extends React.Component {
 
     return (
       <div className="create">
+        <div className="white border-0 rounded">
         <h2 className="title">Create a New Form</h2>
+        </div>
+        <br/>
         <div className="center">
-        <hr/>
         <div className="formInfo">
             <div className="vert-space">
-            <input style={{width: "40em"}} name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
+            <input className="border-0 rounded" style={{width: "40em"}} name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
             </div>
             <div className="vert-space">
-            <input style={{width: "40em"}} name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
+            <input className="border-0 rounded" style={{width: "40em"}} name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
             </div>
         </div>
         <hr/>
@@ -194,10 +196,10 @@ class Create extends React.Component {
           )}
           </Droppable>
         </DragDropContext>
-        <button className="btn btn-light" onClick={this.addQuestion}>New Question</button>
+        <button className="rounded btn btn-light" onClick={this.addQuestion}>New Question</button>
         </div>
         <br/>
-        <button className="btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
+        <button className="rounded btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
       </div>
     );
   }
