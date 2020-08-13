@@ -1,5 +1,6 @@
 import React from 'react';
 import './Create.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -109,7 +110,7 @@ class Create extends React.Component {
             <td>{symbol}</td>
             <td><input value={this.state.questions[index].options[j]}onChange={(e) => this.handleOptionChange(e, index, j)}/></td>
             <td>
-              <button disabled={this.state.questions[index].options.length < 1} onClick={() => this.deleteOption(index, j)}>Delete</button>
+              <button className="btn btn-secondary" disabled={this.state.questions[index].options.length < 1} onClick={() => this.deleteOption(index, j)}><i class="fa fa-times" aria-hidden="true"></i></button>
             </td>
           </tr>
         )
@@ -121,39 +122,46 @@ class Create extends React.Component {
           <table>
             <tbody>
               {options}
+              <tr>
+                <td>{symbol}</td>
+                <td><input name="option" onChange={(e) => this.handleQuestionChange(e, index)} placeholder="Add Option" value={this.state.questions[index].option}/></td>
+                <td><button disabled={!this.state.questions[index].option.trim()} className="btn btn-light" onClick={() => this.addOption(index)}><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+              </tr>
             </tbody>
           </table>
-          <input name="option" onChange={(e) => this.handleQuestionChange(e, index)} placeholder="Add Option" value={this.state.option}/>
-          <button onClick={() => this.addOption(index)}>Add Option</button>
         </div>
       )
 
       //renders either short answer text or options
-      var opts = (<p>Short Answer Text</p>)
+      var opts = (<p className="float-left text-muted">Short Answer Text</p>)
       if (this.state.questions[index].type !== "Short Answer") {
         opts = choice
       } else {
-        opts = (<p>Short Answer Text</p>)
+        opts = (<p className="float-left text-muted">Short Answer Text</p>)
       }
 
       return(
         <Draggable key={index} draggableId={"draggable"+index} index={index}>
         {(provided) => (
           <div index={index} id={index} key={index} {...provided.draggableProps} ref={provided.innerRef}>
-            <hr/>
+            <div className="card" style={{width: "50em"}}>
+            <div className="card-header">
+            <div className="float-right horizontal">
             <i {...provided.dragHandleProps} class="fa fa-bars" aria-hidden="true"></i>
-            <p>{index}</p>
-            <input name="name" onChange={(e) => this.handleQuestionChange(e, index)} value={this.state.questions[index].name}/>
-            <br/>
-            <select name="type" value={this.state.questions[index].type} onChange={(e) => this.handleQuestionChange(e, index)}>
+            <button className="btn btn-danger small" disabled={this.state.questions.length < 2} onClick={() => this.deleteQuestion(index)}><i class="fa fa-trash" aria-hidden="true"></i></button>
+            </div>
+            <input className="float-left" name="name" onChange={(e) => this.handleQuestionChange(e, index)} value={this.state.questions[index].name}/>
+            </div>
+            <div className="card-body">
+            <select className="float-right" name="type" value={this.state.questions[index].type} onChange={(e) => this.handleQuestionChange(e, index)}>
               <option key="Short Answer" value="Short Answer">Short Answer</option>
               <option key="Multiple Choice" value="Multiple Choice">Multiple Choice</option>
               <option key="Multiple Select" value="Multiple Select">Multiple Select</option>
               <option key="Dropdown" value="Dropdown">Dropdown</option>
             </select>
             {opts}
-            <button disabled={this.state.questions.length < 2} onClick={() => this.deleteQuestion(index)}>Delete Question</button>
-            <hr/>
+            </div>
+            </div>
           </div>
         )}
         </Draggable>
@@ -162,27 +170,34 @@ class Create extends React.Component {
 
     return (
       <div className="create">
-        <h2>Create a New Form</h2>
+        <h2 className="title">Create a New Form</h2>
+        <div className="center">
+        <hr/>
         <div className="formInfo">
-          <hr/>
-            Form Title: <input name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
-            <br/>
-            Form Description: <input name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
-          <hr/>
+            <div className="vert-space">
+            <input style={{width: "40em"}} name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
+            </div>
+            <div className="vert-space">
+            <input style={{width: "40em"}} name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
+            </div>
+        </div>
+        <hr/>
         </div>
         <div className="questions">
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="droppable">
           {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div className="center" ref={provided.innerRef} {...provided.droppableProps}>
             {questions}
             {provided.placeholder}
             </div>
           )}
           </Droppable>
         </DragDropContext>
-        <button onClick={this.addQuestion}>New Question</button>
+        <button className="btn btn-light" onClick={this.addQuestion}>New Question</button>
         </div>
+        <br/>
+        <button className="btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
       </div>
     );
   }
