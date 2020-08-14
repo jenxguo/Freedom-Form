@@ -176,8 +176,8 @@ class Viewer extends React.Component {
         <div className="color border-0 rounded">
           <h1 className="title">"{this.props.title}"</h1>
           <h5>{this.props.description}</h5>
-          <Link to={`/results/${this.props.formId}`}>View Results</Link>
           <p>Send this form to your friends! Link: <i>{`www.freedom-form.web.app/form/${this.props.formId}`}</i></p>
+          <Link to={`/results/${this.props.formId}`}>View Results</Link>
         </div>
         <div className="white">
           <form>
