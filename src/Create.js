@@ -3,9 +3,9 @@ import './Create.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {Link, withRouter, Redirect} from 'react-router-dom';
-import {firebaseConnect} from 'react-redux-firebase';
-import {compose} from 'redux';
+import { withRouter } from 'react-router-dom';
+import { firebaseConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 
 class Create extends React.Component {
   constructor(props) {
@@ -35,6 +35,7 @@ class Create extends React.Component {
     const updates = {};
     updates[`/forms/${formId}`] = newForm;
     //if want to do results, push to results here too
+    this.props.firebase.set(`/results/${formId}`, {title: this.state.title})
     this.props.firebase.update(`/`, updates, onComplete);
   }
 
@@ -111,9 +112,9 @@ class Create extends React.Component {
 
       //symbol matching
       var symbol = (<i class="fa fa-circle-thin" aria-hidden="true"></i>)
-      if (this.state.questions[index].type == "Multiple Select") {
+      if (this.state.questions[index].type === "Multiple Select") {
         symbol = (<i class="fa fa-square-o" aria-hidden="true"></i>)
-      } else if (this.state.questions[index].type == "Dropdown") {
+      } else if (this.state.questions[index].type === "Dropdown") {
         symbol = (<i class="fa fa-caret-down" aria-hidden="true"></i>)
       } else {
         symbol = (<i class="fa fa-circle-thin" aria-hidden="true"></i>)
@@ -216,7 +217,7 @@ class Create extends React.Component {
         <button className="rounded btn btn-light" onClick={this.addQuestion}>New Question</button>
         </div>
         <br/>
-        <button className="create rounded btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
+        <button className="create rounded btn btn-primary" disabled={!this.state.title || this.state.questions.length < 1}onClick={this.createForm}>Create Form</button>
         </div>
       </div>
     );

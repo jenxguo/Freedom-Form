@@ -1,15 +1,33 @@
 import React from 'react';
 import './Viewer.css';
 
-import {Link, withRouter} from 'react-router-dom';
-import {firebaseConnect, isLoaded, isEmpty, populate} from 'react-redux-firebase';
-import {connect} from 'react-redux';
-import {compose} from 'redux';
+import {Link} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 class Viewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { };
+  }
+
+  saveResult = () => {
+    const userKey = this.props.firebase.push(`/results/${this.props.formId}/data`).key;
+    var results = this.state;
+    for (var key in results) {
+      if (results[key] instanceof Set) {
+        results[key] = Array.from(results[key])
+      }
+    }
+    const onComplete = () => {
+      console.log('results updated');
+      this.props.history.push(`/results/${this.props.formId}`);
+    }
+    const updates = {};
+    updates[`/results/${this.props.formId}/data/${userKey}`] = results;
+    this.props.firebase.update(`/`, updates, onComplete);
   }
 
   //general handle change function with name property, need to use square bracket []
@@ -39,8 +57,8 @@ class Viewer extends React.Component {
       if (!this.state.[this.props.questions[i].name]) {
         return true;
       }
-      if (this.props.questions[i].type == "Dropdown") {
-        if (this.state.[this.props.questions[i].name] == "--") {
+      if (this.props.questions[i].type === "Dropdown") {
+        if (this.state.[this.props.questions[i].name] === "--") {
           return true;
         }
       }
@@ -65,22 +83,24 @@ class Viewer extends React.Component {
 
       //render options
       const options = this.props.questions[index].options.map((option, j) => {
-        if (type == "Dropdown") {
+        if (type === "Dropdown") {
           return (
             <option key={j}>{option}</option>
           );
-        } else if (type == "Multiple Choice") {
+        } else if (type === "Multiple Choice") {
             return (
               <div>
                 <input type="radio" onChange={this.handleChange} key={j} name={name} value={option}/> {option}
               </div>
             );
-        } else if (type == "Multiple Select") {
+        } else if (type === "Multiple Select") {
             return (
               <div>
                 <input type="checkbox" name={name} value={option} onChange={this.handleCheckboxChange}/> {option}
               </div>
             );
+        } else {
+          return (<div></div>)
         }
       });
 
@@ -95,7 +115,7 @@ class Viewer extends React.Component {
           </div>
         </div>
       )
-      if (type == "Short Answer") {
+      if (type === "Short Answer") {
         input = (
           <div class="form-group">
             <div className="card-header">
@@ -106,7 +126,7 @@ class Viewer extends React.Component {
             </div>
           </div>
         )
-      } else if (type == "Multiple Choice") {
+      } else if (type === "Multiple Choice") {
         input = (
           <div class="form-group">
             <div className="card-header">
@@ -117,7 +137,7 @@ class Viewer extends React.Component {
             </div>
           </div>
         )
-      } else if (type == "Multiple Select") {
+      } else if (type === "Multiple Select") {
         input = (
           <div class="form-group">
             <div className="card-header">
@@ -128,7 +148,7 @@ class Viewer extends React.Component {
             </div>
           </div>
         )
-      } else if (type == "Dropdown") {
+      } else if (type === "Dropdown") {
         input = (
           <div class="form-group">
             <div className="card-header">
@@ -151,19 +171,18 @@ class Viewer extends React.Component {
       )
     });
 
-    var filled = false;
-
     return (
       <div className='Viewer'>
         <div className="color border-0 rounded">
-          <h1 className="title">{this.props.title}</h1>
+          <h1 className="title">"{this.props.title}"</h1>
           <h5>{this.props.description}</h5>
+          <Link to={`/results/${this.props.formId}`}>View Results</Link>
           <p>Send this form to your friends! Link: <i>{`www.freedom-form.web.app/form/${this.props.formId}`}</i></p>
         </div>
         <div className="white">
-          <form onSubmit={this.handleSubmit}>
+          <form>
             {questions}
-            <button className="create rounded btn btn-primary" onClick="" disabled={this.isfilled()}>Submit</button>
+            <button className="create rounded btn btn-primary" onClick={this.saveResult} disabled={this.isfilled()}>Submit</button>
           </form>
         </div>
       </div>

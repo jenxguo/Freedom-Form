@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import firebase from 'firebase/app'
-import { createStore, combineReducers, compose } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import {
   ReactReduxFirebaseProvider,
   firebaseReducer

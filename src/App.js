@@ -25,7 +25,7 @@ function App() {
           <Viewer/>
         </div>
       </Route>
-      <Route path="/form/:formId/results">
+      <Route path="/results/:formId">
         <div className="App">
           <Results/>
         </div>
