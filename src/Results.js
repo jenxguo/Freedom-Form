@@ -48,7 +48,7 @@ class Results extends React.Component {
         <div className="color border-0 rounded">
           <h1 className="title">"{this.props.title}" Results</h1>
           <p>Send this form to your friends! Link: <i>{`www.freedom-form.web.app/form/${this.props.formId}`}</i></p>
-          <Link to={`/form/${this.props.formId}`}>Back to Form</Link>
+          <Link to={`/form/${this.props.formId}`}>Go Back</Link>
           <br/>
           <Link to={`/create`}>Create a New Form</Link>
         </div>
