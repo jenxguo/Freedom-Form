@@ -3,6 +3,9 @@ import './Create.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {Link, withRouter, Redirect} from 'react-router-dom';
+import {firebaseConnect} from 'react-redux-firebase';
+import {compose} from 'redux';
 
 class Create extends React.Component {
   constructor(props) {
@@ -20,6 +23,19 @@ class Create extends React.Component {
         }
       ],
     }
+  };
+
+  createForm = () => {
+    const formId = this.props.firebase.push('/forms').key;
+    const newForm = {title: this.state.title, description: this.state.description, questions: this.state.questions};
+    const onComplete = () => {
+      console.log('database updated with new form!');
+      this.props.history.push(`/form/${formId}`);
+    };
+    const updates = {};
+    updates[`/forms/${formId}`] = newForm;
+    //if want to do results, push to results here too
+    this.props.firebase.update(`/`, updates, onComplete);
   }
 
   //general handle change function with name property, need to use square bracket []
@@ -125,7 +141,7 @@ class Create extends React.Component {
               <tr>
                 <td>{symbol}</td>
                 <td><input name="option" onChange={(e) => this.handleQuestionChange(e, index)} placeholder="Add Option" value={this.state.questions[index].option}/></td>
-                <td><button disabled={!this.state.questions[index].option.trim()} className="btn btn-light" onClick={() => this.addOption(index)}><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                <td><button disabled={!this.state.questions[index].option.trim()} className="btn btn-primary" onClick={() => this.addOption(index)}><i class="fa fa-plus" aria-hidden="true"></i></button></td>
               </tr>
             </tbody>
           </table>
@@ -170,20 +186,21 @@ class Create extends React.Component {
 
     return (
       <div className="create">
-        <div className="white border-0 rounded">
-        <h2 className="title">Create a New Form</h2>
+        <div className="color border-0 rounded">
+          <h2 className="title">Create a New Form</h2>
         </div>
+        <div className="white">
         <br/>
         <div className="center">
-        <div className="formInfo">
-            <div className="vert-space">
-            <input className="border-0 rounded" style={{width: "40em"}} name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
-            </div>
-            <div className="vert-space">
-            <input className="border-0 rounded" style={{width: "40em"}} name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
-            </div>
-        </div>
-        <hr/>
+          <div className="formInfo">
+              <div className="vert-space">
+              <input className="border-primary rounded" style={{width: "40em"}} name="title" onChange={this.handleChange} placeholder="Form Title" value={this.state.title}/>
+              </div>
+              <div className="vert-space">
+              <input className="border-primary rounded" style={{width: "40em"}} name="description" onChange={this.handleChange} placeholder="Form Description" value={this.state.description}/>
+              </div>
+          </div>
+          <hr/>
         </div>
         <div className="questions">
         <DragDropContext onDragEnd={this.onDragEnd}>
@@ -199,10 +216,11 @@ class Create extends React.Component {
         <button className="rounded btn btn-light" onClick={this.addQuestion}>New Question</button>
         </div>
         <br/>
-        <button className="rounded btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
+        <button className="create rounded btn btn-primary" disabled={!this.state.title || this.state.questions.length < 2}onClick={this.createForm}>Create Form</button>
+        </div>
       </div>
     );
   }
 }
 
-export default Create;
+export default compose(firebaseConnect(), withRouter)(Create);
